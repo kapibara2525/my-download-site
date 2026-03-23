@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Download</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+        input { padding: 10px; width: 250px; }
+        button { padding: 10px 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>パスワードを入力してダウンロード</h2>
+    <input type="text" id="passInput" placeholder="発行されたパスワード">
+    <button onclick="checkPassword()">検証してダウンロード</button>
+    <p id="msg"></p>
+
+    <script>
+        async function checkPassword() {
+            const pass = document.getElementById('passInput').value;
+            const gasUrl = "あなたのGASウェブアプリURL"; // ★ここにステップ1のURLを貼る
+            
+            document.getElementById('msg').innerText = "確認中...";
+            
+            try {
+                const response = await fetch(`${gasUrl}?pass=${pass}`);
+                const result = await response.text();
+
+                if (result.startsWith("http")) {
+                    document.getElementById('msg').innerText = "認証成功！ダウンロードを開始します。";
+                    window.location.href = result; // ファイルへリダイレクト
+                } else {
+                    document.getElementById('msg').innerText = "エラー: パスワードが違うか、既に使用されています。";
+                }
+            } catch (e) {
+                document.getElementById('msg').innerText = "エラーが発生しました。";
+            }
+        }
+    </script>
+</body>
+</html>
